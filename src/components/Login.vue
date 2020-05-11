@@ -3,7 +3,7 @@
     <div class="login_box">
       <!-- logo区域 -->
       <div class="avater_box">
-        <img src="~@/assets/img/logo.jpg" alt />
+        <img src="~@/assets/img/logo.jpeg" alt />
       </div>
       <!-- 表单区域 -->
       <el-form
@@ -66,13 +66,12 @@ export default {
       this.$refs.loginFormRef.resetFields()
     },
     login() {
-      this.$refs.loginFormRef.validate(valid => {
+      this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return
-        this.$message({
-          message: '登录成功',
-          type: 'success'
-        })
-        window.sessionStorage.setItem('token', '123')
+        const { data: res } = await this.$http.post('login', this.login_form)
+        if (res.meta.status !== 200) return this.$message.error('登录失败！')
+        this.$message.success('登录成功')
+        window.sessionStorage.setItem('token', res.data.token)
         this.$router.push('/home')
       })
     }
